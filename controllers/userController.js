@@ -1,6 +1,6 @@
 const { User, Thought } = require('../models');
 
-//TODO: make sure each user is coded correctly, test them in insomnia
+//TODO: test delete friend in insomnia
 
 module.exports = {
   // get all users
@@ -66,7 +66,7 @@ module.exports = {
   },
   // add new friend
   addNewFriend(req, res) {
-    User.findOneAndUpdate({_id: req.params.userId}, {$push: {friends: params.friendId} }, {runValidators: true, new: true})
+    User.findOneAndUpdate({_id: req.params.userId}, {$push: {friends: req.params.friendId} }, {runValidators: true, new: true})
       .then((user) =>
         !user
           ? res.status(404).json({ message: 'No friend with this id!' })
@@ -79,15 +79,15 @@ module.exports = {
   },
   // delete friend 
   deleteFriend(req, res) {
-    User.findOneAndRemove({ _id: req.params.userId}, {$pull: {friends: params.friendId} }, {new: true})
+    User.findOneAndDelete(
+      { _id: req.params.userId}, 
+      {$pull: {friends: req.params.friendId} }, 
+      {runValidators: true, new: true}
+    )
       .then((user) =>
         !user
           ? res.status(404).json({ message: 'No friend with this id!' })
-          : User.findOneAndUpdate(
-              { _id: req.params.userId },
-              { $pull: { friends: req.params.friendId } },
-              { new: true }
-            )
+          : res.json(user)
       )
       .then((user) =>
         !user

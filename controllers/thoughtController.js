@@ -1,6 +1,6 @@
 const { Thought, User } = require('../models');
 
-//TODO: make edits to the thoughts and test them in insomnia
+//TODO: test delete reaction in insomnia
 
 module.exports = {
   // Get all thoughts
@@ -56,19 +56,15 @@ module.exports = {
   },
   // Create a reaction
   createReaction(req, res) {
-    Thought.create(req.body)
-      .then((thought) => {
-        return thought.findOneAndUpdate(
-          {_id: req.params.id},
-          {$addToSet: {reactions: body}},
-          {new: true},
-          {runValidators: true}
-        );
-      })
+    Thought.findOneAndUpdate(
+          {_id: req.params.thoughtId},
+          {$addToSet: {reactions: req.body}},
+          {runValidators: true, new: true,}
+        )
       .then((thought) =>
       !thought
       ? res.status(404).json({ message: 'Application created, but found no user with that ID'})
-      : res.json('Created the reaction')
+      : res.json(thought)
       )
       .catch((err) => {
         console.log(err);
@@ -77,20 +73,15 @@ module.exports = {
   },
    // Delete a reaction
    deleteReaction(req, res) {
-    Thought.findOneAndDelete({ _id: req.params.thoughtId })
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId},
+      {$pull: {reactions: {reactionId: req.params.reactionId} }},
+      {runValidators: true, new: true,}
+      )
     .then((thought) =>
     !thought
       ? res.status(404).json({ message: 'No reaction with this id!' })
-      : User.findOneAndUpdate(
-          { _id: req.params.thoughtId },
-          { $pull: { reactions: {reactionId: params.reactionId } }},
-          { new: true }
-        )
-    )
-    .then((thought) =>
-      !thought
-        ? res.status(404).json({ message: ' No reaction with this id!', })
-        : res.json({ message: 'Reacion successfully deleted!' })
+      : res.json(thought)
     )
     .catch((err) => res.status(500).json(err));
   },
