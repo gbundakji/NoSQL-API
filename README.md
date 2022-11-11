@@ -23,6 +23,22 @@ Welcome 😊👋
 
 ## Visuals 📷
 
+Here are some examples of the routes:
+
+<img src = "./assets/images/findall_users.png" width = "600px">
+
+<br>
+
+<img src = "./assets/images/createthought.png" width = "600px">
+
+<br>
+
+<img src = "./assets/images/createreaction.png" width = "600px">
+
+<br>
+
+<img src = "./assets/images/addfriend.png" width = "600px">
+<br>
 
 
 ## Installation 🔃
